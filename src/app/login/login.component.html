@@ -1,0 +1,27 @@
+<div class="login-container">
+    <h1>Login</h1>
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+      <div class="form-group">
+        <label for="email">Email:</label>
+        <input type="email" id="email" formControlName="email" class="form-control" required>
+      </div>
+      <div class="form-group">
+        <label for="password">Password:</label>
+        <input type="password" id="password" formControlName="password" class="form-control" required>
+      </div>
+      <div class="form-group">
+        <label for="role">Role:</label>
+        <select id="role" formControlName="role" class="form-control" required>
+          <option value="student" selected>Student</option>
+          <option value="parent">Parent</option>
+          <option value="teacher">Teacher</option>
+          <option value="admin">Admin</option>
+        </select>
+      </div>
+      <button type="submit" class="btn btn-primary">Login</button>
+    </form>
+    <div *ngIf="errorMessage" class="error-message">
+      {{ errorMessage }}
+    </div>
+  </div>
+  
