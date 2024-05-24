@@ -1,0 +1,71 @@
+<form>
+    <div class="popup-container">
+        <div class="popup-content">
+            <h2>{{state === 'add' ? 'Add user' : 'Update Course' }}</h2>
+            <p (click)="cross()">X</p>
+
+            @if(state == 'add') {
+            <div>
+                <label>Email:</label>
+                <input type="email" [(ngModel)]="UserInput.email" name="email" required>
+            </div>
+            <div>
+                <label>Password:</label>
+                <input type="text" [(ngModel)]="UserInput.password" name="password" required>
+            </div>
+            <select [(ngModel)]="UserInput.role" name="role" required>
+                <option value="student" selected>Student</option>
+                <option value="parent">Parent</option>
+                <option value="teacher">Teacher</option>
+                <option value="admin">Admin</option>
+            </select>
+            @if(UserInput.role == 'parent') {
+                <div>
+                    <label>Student Mail:</label>
+                    <input type="text" [(ngModel)]="UserInput.studentMail" name="studentMail" required>
+                </div>
+            }
+
+            <button class="submit" (click)="addUser()">add user</button>
+
+            } @else {
+            <div>
+                <label>Course Name:</label>
+                <input type="text" [(ngModel)]="CourseInput.name" name="username" required>
+            </div>
+            <div>
+                <label>Source:</label>
+                <input type="email" [(ngModel)]="CourseInput.source" name="email" required>
+            </div>
+
+            <button class="submit" (click)="addCourse()">add course</button>
+
+            <span></span>
+
+            <div class="course-list">
+                <table>
+                <thead>
+                    <tr>
+                        <th>CourseName</th>
+                        <th>Source</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @for (course of courses; track $index) {
+                    <tr>
+                        <td>{{course.name}}</td>
+                        <td>{{course.source}}</td>
+                        <td>
+                            <img src="https://www.pikpng.com/pngl/m/247-2474264_png-file-svg-delete-icon-svg-clipart.png" class="delete-btn" (click)="deleteCourse(course.id)"/>
+                          </td>
+                    </tr>
+                    }
+                </tbody>
+                </table>
+            </div>
+            }
+
+
+        </div>
+    </div>
+</form>
