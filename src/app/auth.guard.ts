@@ -13,7 +13,7 @@ export class AuthGuard implements CanActivate {
 
     const token = localStorage.getItem('token');
     if (state.url !== '/login' && !token) {
-      console.log('token not found')
+      console.log('token not found');
       this.router.navigate(['/login']);
       return false;
     }

@@ -14,10 +14,13 @@ import { AuthService } from '../services/auth.service';
 export class PopupComponent {
   @Input() state: string = 'user';
   @Output() close = new EventEmitter<any>();
+  @Output() update = new EventEmitter<any>();
 
   constructor(private courseService: CourseService, private authService: AuthService) { }
 
-  courses:any;
+  courses: any;
+  studentMails: any;
+  userRole: any;
 
   UserInput: any = {
     email: '',
@@ -31,9 +34,17 @@ export class PopupComponent {
     source: ''
   }
 
+  assignCourseData: any = {
+    studentId: '',
+    courseId: []
+  }
+
 
   ngOnInit() {
     this.loadCourses();
+    this.loadStudents();
+    this.userRole = this.authService.getRole();
+    console.log("user")
   }
 
   loadCourses() {
@@ -50,6 +61,7 @@ export class PopupComponent {
       .subscribe(() => {
         console.log('Course deleted successfully');
         this.loadCourses();
+        this.update.emit();
       }, error => {
         console.log('error deleting course', error);
       });
@@ -61,7 +73,7 @@ export class PopupComponent {
       .subscribe(() => {
         console.log('Course added successfully');
         this.loadCourses();
-        this.cross();
+        this.update.emit();
       }, error => {
         console.log('error adding course', error);
       });
@@ -78,7 +90,40 @@ export class PopupComponent {
       });
   }
 
+  loadStudents() {
+    this.authService.fetchStudents()
+      .subscribe(mails => {
+        this.studentMails = mails;
+        console.log(mails);
+      }, error => {
+        console.log('error fetching student mails in popup', error);
+      });
+  }
+
   cross() {
     this.close.emit();
   }
+
+  onCourseCheckboxChange(event: any, courseId: number) {
+    if (event.target.checked) {
+      this.assignCourseData.courseId.push(courseId);
+    } else {
+      const index = this.assignCourseData.courseId.indexOf(courseId);
+      if (index > -1) {
+        this.assignCourseData.courseId.splice(index, 1);
+      }
+    }
+  }
+
+  assignCourses() {
+    console.log(this.assignCourseData);
+    this.courseService.assignCourse(this.assignCourseData)
+      .subscribe((res) => {
+        console.log('courses assigned successfully', res)
+      }, error => {
+        console.log('error assigning courses', error);
+      });
+  }
+
+
 }

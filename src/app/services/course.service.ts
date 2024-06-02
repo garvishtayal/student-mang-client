@@ -1,25 +1,36 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { AuthService } from './auth.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class CourseService {
 
-  constructor(private http: HttpClient) { }
+  userRole: any;
+
+  constructor(private http: HttpClient, private authService: AuthService) {
+    this.userRole = this.authService.getRole();
+  }
 
   getCourses(): Observable<any> {
-    const token = localStorage.getItem('token'); 
+    const token = localStorage.getItem('token');
     const headers = new HttpHeaders({
-      'Authorization': `Bearer ${token}`
+      'Authorization': `Bearer ${token}`,
+      'Content-Type': 'application/json'
     });
 
-    return this.http.get<any>('http://localhost:5199/api/Course', { headers: headers });
+      return this.http.get<any>('http://localhost:5199/api/Course', { headers: headers });
+  }
+
+  getAssignedCourses(studentMail: { Email: string }) {
+
+    return this.http.post<any>('http://localhost:5199/api/Course/assignedCourses', studentMail);
   }
 
   deleteCourse(id: string): Observable<any> {
-    const token = localStorage.getItem('token'); 
+    const token = localStorage.getItem('token');
     const headers = new HttpHeaders({
       'Authorization': `Bearer ${token}`
     });
@@ -27,7 +38,7 @@ export class CourseService {
     return this.http.delete<any>(`http://localhost:5199/api/Course/${id}`, { headers: headers });
 
   }
-  
+
   addCourse(course: any): Observable<any> {
     const token = localStorage.getItem('token');
     const headers = new HttpHeaders({
@@ -36,6 +47,16 @@ export class CourseService {
     });
 
     return this.http.post<any>('http://localhost:5199/api/Course', course, { headers: headers });
+  }
+
+  assignCourse(assignCourseData: any): Observable<any> {
+    const token = localStorage.getItem('token');
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${token}`,
+      'Content-Type': 'application/json'
+    });
+
+    return this.http.post<any>('http://localhost:5199/api/Course/assign', assignCourseData, { headers: headers });
   }
 
 

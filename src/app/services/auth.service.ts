@@ -36,4 +36,15 @@ export class AuthService {
 
     return this.http.post<any>(`http://localhost:5199/api/Auth/admin/addUser`, user, { headers: headers });
   }
+  
+  fetchStudents(): Observable<any> {
+    const token = localStorage.getItem('token');
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${token}`,
+      'Content-Type': 'application/json'
+    });
+
+    return this.http.get<any>(`http://localhost:5199/api/Auth/getAllStudents`, { headers: headers });
+  }
+
 }

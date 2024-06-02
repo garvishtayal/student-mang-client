@@ -43,6 +43,7 @@ export class LoginComponent {
     this.auth.login(loginModel)
       .subscribe(response => {
         console.log('Login successful:', response);
+        localStorage.setItem("userEmail", loginModel.email);
         localStorage.setItem("token", response.token);
         this.errorMessage = '';
         this.router.navigate(['/main']);

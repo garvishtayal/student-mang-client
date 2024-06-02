@@ -1,7 +1,8 @@
 <form>
     <div class="popup-container">
         <div class="popup-content">
-            <h2>{{state === 'add' ? 'Add user' : 'Update Course' }}</h2>
+            <h2>{{ state === 'add' ? 'Add User' : (state === 'assign' ? 'Assign Courses' : 'Update Course') }}</h2>
+
             <p (click)="cross()">X</p>
 
             @if(state == 'add') {
@@ -16,19 +17,47 @@
             <select [(ngModel)]="UserInput.role" name="role" required>
                 <option value="student" selected>Student</option>
                 <option value="parent">Parent</option>
+
+                @if(userRole=="admin") {
                 <option value="teacher">Teacher</option>
                 <option value="admin">Admin</option>
+                }
+
             </select>
             @if(UserInput.role == 'parent') {
-                <div>
-                    <label>Student Mail:</label>
-                    <input type="text" [(ngModel)]="UserInput.studentMail" name="studentMail" required>
-                </div>
+            <div>
+                <label>Student Mail:</label>
+                <input type="text" [(ngModel)]="UserInput.studentMail" name="studentMail" required>
+            </div>
             }
 
             <button class="submit" (click)="addUser()">add user</button>
 
-            } @else {
+            } @else if (state == 'assign') {
+
+            <select [(ngModel)]="assignCourseData.studentId" name="student" required>
+
+                @for (mail of studentMails; track $index) {
+                <option [value]="mail.id" selected>{{mail.email}}</option>
+                }
+
+            </select>
+            @if(assignCourseData.studentId) {
+                <div class="assign-container">
+                    @for (course of courses; track $index) {
+                    <div>
+                        <input type="checkbox" [value]="course.id" (change)="onCourseCheckboxChange($event, course.id)">
+                        <label for="courseCheckbox">{{course.name}}</label>
+                    </div>
+                    }
+
+                    <button class="submit" (click)="assignCourses()">save</button>
+                </div>
+
+            }
+
+            }
+            @else {
             <div>
                 <label>Course Name:</label>
                 <input type="text" [(ngModel)]="CourseInput.name" name="username" required>
@@ -44,23 +73,24 @@
 
             <div class="course-list">
                 <table>
-                <thead>
-                    <tr>
-                        <th>CourseName</th>
-                        <th>Source</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @for (course of courses; track $index) {
-                    <tr>
-                        <td>{{course.name}}</td>
-                        <td>{{course.source}}</td>
-                        <td>
-                            <img src="https://www.pikpng.com/pngl/m/247-2474264_png-file-svg-delete-icon-svg-clipart.png" class="delete-btn" (click)="deleteCourse(course.id)"/>
-                          </td>
-                    </tr>
-                    }
-                </tbody>
+                    <thead>
+                        <tr>
+                            <th>CourseName</th>
+                            <th>Source</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @for (course of courses; track $index) {
+                        <tr>
+                            <td>{{course.name}}</td>
+                            <td>{{course.source}}</td>
+                            <td>
+                                <img src="https://www.pikpng.com/pngl/m/247-2474264_png-file-svg-delete-icon-svg-clipart.png"
+                                    class="delete-btn" (click)="deleteCourse(course.id)" />
+                            </td>
+                        </tr>
+                        }
+                    </tbody>
                 </table>
             </div>
             }

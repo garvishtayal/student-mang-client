@@ -1,28 +1,38 @@
 <div class="main-container" [ngClass]="{'blur-background': blurBackground}">
-    
-    <div class="header">
-        <h1>Courses</h1>
-        @if(userRole == "admin") {
-            <div>
-                <button (click)="course()">edit courses</button>
-                <button (click)="addUser()">add user</button>
-            </div>
-        } @else if (userRole == "teacher") {
-            <button (click)="addUser()">add user</button>
-        }
+
+  <div class="header">
+    <h1>Courses</h1>
+    @if(userRole == "admin") {
+    <div>
+      <button (click)="assign()">assign courses</button>
+      <button (click)="course()">edit courses</button>
+      <button (click)="addUser()">add user</button>
     </div>
-  
-    <div class="course-list" *ngIf="!isLoading && !error">
-      <div class="course-card" *ngFor="let course of courses">
-        <h3 class="course-card-title">{{ course.name }}</h3>
-        <p class="course-card-details">Source: {{ course.source }}</p>
-      </div>
-    </div>
-  
-    <div class="loading" *ngIf="isLoading">Loading courses...</div>
-    <div class="error" *ngIf="error">Error: {{ error }}</div>
+    } @else if (userRole == "teacher") {
+    <button (click)="assign()">assign courses</button>
+    <button (click)="addUser()">add user</button>
+    }
   </div>
-  
-  @if(showPopup) {
-  <app-popup [state]="state" (close)="closePopup()"></app-popup>
+
+  @if(!isLoading && !error) {
+  <div class="course-list">
+    <div class="course-card" *ngFor="let course of courses">
+      <h3 class="course-card-title">{{ course.name }}</h3>
+      <p class="course-card-details">Source: {{ course.source }}</p>
+    </div>
+  </div>
   }
+
+  @if(isLoading) {
+  <div class="loading" >Loading courses...</div>
+  }
+
+  @if(error) {
+  <div class="error" >Error: {{ error }}</div>
+  }
+
+</div>
+
+@if(showPopup) {
+<app-popup [state]="state" (close)="closePopup()" (update)="loadCourses()"></app-popup>
+}

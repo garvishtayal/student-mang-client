@@ -24,6 +24,11 @@ export class MainComponent implements OnInit {
   constructor(private courseService: CourseService, private authService: AuthService) { }
 
   ngOnInit() {
+    this.loadCourses();
+    console.log(this.userRole)
+  }
+  
+  loadCourses() {
     this.isLoading = true;
     this.courseService.getCourses()
       .subscribe(courses => {
@@ -31,7 +36,6 @@ export class MainComponent implements OnInit {
         this.courses = courses;
         this.isLoading = false;
         this.userRole = this.authService.getRole();
-
       }, error => {
         this.error = error.message;
         this.isLoading = false;
@@ -49,6 +53,11 @@ export class MainComponent implements OnInit {
   }
   addUser() {
     this.state = 'add';
+    this.blurBackground = true;
+    this.showPopup = true;
+  }
+  assign() {
+    this.state = 'assign';
     this.blurBackground = true;
     this.showPopup = true;
   }
