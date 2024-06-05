@@ -14,6 +14,7 @@ import { PopupComponent } from '../popup/popup.component';
 export class MainComponent implements OnInit {
   courses: any[] = [];
   userRole:any;
+  userMail:any;
   isLoading: boolean = false;
   error: string | null = null;
 
@@ -24,8 +25,29 @@ export class MainComponent implements OnInit {
   constructor(private courseService: CourseService, private authService: AuthService) { }
 
   ngOnInit() {
-    this.loadCourses();
-    console.log(this.userRole)
+    this.userMail = localStorage.getItem('userEmail');
+    this.userRole = localStorage.getItem('userRole');
+    console.log(this.userRole);
+
+    if(this.userRole == "admin" || this.userRole == 'teacher') {
+      this.loadCourses();
+    }
+    else {
+      this.loadAssignedCourses();
+    }
+  }
+
+  loadAssignedCourses() {
+    this.isLoading = true;
+    this.courseService.getAssignedCourses(this.userMail)
+      .subscribe(courses => {
+        console.log(courses);
+        this.courses = courses;
+        this.isLoading = false;
+      }, error => {
+        this.error = error.message;
+        this.isLoading = false;
+      });
   }
   
   loadCourses() {
@@ -62,4 +84,3 @@ export class MainComponent implements OnInit {
     this.showPopup = true;
   }
 }
-

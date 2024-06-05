@@ -24,9 +24,9 @@ export class CourseService {
       return this.http.get<any>('http://localhost:5199/api/Course', { headers: headers });
   }
 
-  getAssignedCourses(studentMail: { Email: string }) {
+  getAssignedCourses(studentMail: string) {
 
-    return this.http.post<any>('http://localhost:5199/api/Course/assignedCourses', studentMail);
+    return this.http.post<any>('http://localhost:5199/api/Course/assignedCourses', { Email: studentMail });
   }
 
   deleteCourse(id: string): Observable<any> {
